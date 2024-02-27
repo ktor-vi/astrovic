@@ -18,42 +18,27 @@ return {
   },
 
   -- Set colorscheme to use
-  colorscheme = "astrodark",
+  colorscheme = "kanagawa-wave",
 
   -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
     virtual_text = true,
     underline = true,
   },
-
   lsp = {
-    -- customize lsp formatting options
+    config = {
+      clangd = {
+        capabilities = {
+          offsetEncoding = "utf-8",
+        },
+      },
+    },
     formatting = {
-      -- control auto formatting on save
       format_on_save = {
-        enabled = true, -- enable or disable format on save globally
-        allow_filetypes = { -- enable format on save for specified filetypes only
-          -- "go",
-        },
-        ignore_filetypes = { -- disable format on save for specified filetypes
-          -- "python",
-        },
-      },
-      disabled = { -- disable formatting capabilities for the listed language servers
-        -- disable lua_ls formatting capability if you want to use StyLua to format your lua code
-        -- "lua_ls",
-      },
-      timeout_ms = 1000, -- default format timeout
-      -- filter = function(client) -- fully override the default formatting function
-      --   return true
-      -- end
-    },
-    -- enable servers that you already have installed without mason
-    servers = {
-      -- "pyright"
-    },
+        enabled = false,
+      }
+    }
   },
-
   -- Configure require("lazy").setup() options
   lazy = {
     defaults = { lazy = true },
@@ -65,6 +50,77 @@ return {
     },
   },
 
+  plugins = {
+    init = {
+      ["Darazaki/indent-o-matic"] = { disable = true },
+    },
+    opts = {
+      autotag = { enable = true },
+      highlight = {
+        enable = true,
+        disable = function(_, bufnr) return vim.api.nvim_buf_line_count(bufnr) > 10000 end,
+      },
+      incremental_selection = { enable = true },
+      indent = { enable = true },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["ak"] = { query = "@block.outer", desc = "around block" },
+            ["ik"] = { query = "@block.inner", desc = "inside block" },
+            ["ac"] = { query = "@class.outer", desc = "around class" },
+            ["ic"] = { query = "@class.inner", desc = "inside class" },
+            ["a?"] = { query = "@conditional.outer", desc = "around conditional" },
+            ["i?"] = { query = "@conditional.inner", desc = "inside conditional" },
+            ["af"] = { query = "@function.outer", desc = "around function " },
+            ["if"] = { query = "@function.inner", desc = "inside function " },
+            ["al"] = { query = "@loop.outer", desc = "around loop" },
+            ["il"] = { query = "@loop.inner", desc = "inside loop" },
+            ["aa"] = { query = "@parameter.outer", desc = "around argument" },
+            ["ia"] = { query = "@parameter.inner", desc = "inside argument" },
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            ["]k"] = { query = "@block.outer", desc = "Next block start" },
+            ["]f"] = { query = "@function.outer", desc = "Next function start" },
+            ["]a"] = { query = "@parameter.inner", desc = "Next argument start" },
+          },
+          goto_next_end = {
+            ["]K"] = { query = "@block.outer", desc = "Next block end" },
+            ["]F"] = { query = "@function.outer", desc = "Next function end" },
+            ["]A"] = { query = "@parameter.inner", desc = "Next argument end" },
+          },
+          goto_previous_start = {
+            ["[k"] = { query = "@block.outer", desc = "Previous block start" },
+            ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+            ["[a"] = { query = "@parameter.inner", desc = "Previous argument start" },
+          },
+          goto_previous_end = {
+            ["[K"] = { query = "@block.outer", desc = "Previous block end" },
+            ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+            ["[A"] = { query = "@parameter.inner", desc = "Previous argument end" },
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            [">K"] = { query = "@block.outer", desc = "Swap next block" },
+            [">F"] = { query = "@function.outer", desc = "Swap next function" },
+            [">A"] = { query = "@parameter.inner", desc = "Swap next argument" },
+          },
+          swap_previous = {
+            ["<K"] = { query = "@block.outer", desc = "Swap previous block" },
+            ["<F"] = { query = "@function.outer", desc = "Swap previous function" },
+            ["<A"] = { query = "@parameter.inner", desc = "Swap previous argument" },
+          },
+        },
+      },
+    },
+  },
   -- This function is run last and is a good place to configuring
   -- augroups/autocommands and custom filetypes also this just pure lua so
   -- anything that doesn't fit in the normal config locations above can go here
